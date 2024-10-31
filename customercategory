@@ -1,0 +1,29 @@
+SET SERVEROUTPUT ON;
+
+DECLARE
+    balance Number(10);
+
+    -- Procedure to categorize customer and print result instead of updating the table
+    PROCEDURE categorize_customer (CID IN NUMBER, bal IN NUMBER) IS
+        category VARCHAR2(10);
+    BEGIN
+        IF bal <= 10000 THEN
+            category := 'Silver';
+        ELSIF bal <= 50000 THEN
+            category := 'Gold';
+        ELSE
+            category := 'Platinum';
+        END IF;
+
+        -- Print the category instead of updating the table
+        DBMS_OUTPUT.PUT_LINE('CID: ' || CID || ', bal: ' || bal || ', Category: ' || category);
+    END;
+    
+BEGIN
+    -- Loop through all customers and categorize them
+    FOR customer_rec IN (SELECT CID, bal FROM customer_balance) LOOP
+        categorize_customer(customer_rec.CID, customer_rec.bal);
+    END LOOP;
+
+END;
+/
