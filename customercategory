@@ -3,23 +3,24 @@ CREATE TABLE customer_balance (
     bal NUMBER(10)
 );
 
-INSERT INTO customer_balance (CID, bal) VALUES (6901, 10340);
-INSERT INTO customer_balance (CID, bal) VALUES (6950, 7830);
-INSERT INTO customer_balance (CID, bal) VALUES (7001, 45000);
-INSERT INTO customer_balance (CID, bal) VALUES (8756, 69000);
+INSERT INTO customer_balance(CID, bal) VALUES (6901, 10340);
+INSERT INTO customer_balance(CID, bal) VALUES (6950, 7830);
+INSERT INTO customer_balance (CID, bal) VALUES(7001, 45000);
+INSERT INTO customer_balance (CID, bal) VALUES (8756, 6900);
 INSERT INTO customer_balance (CID, bal) VALUES (4200, 500);
-INSERT INTO customer_balance (CID, bal) VALUES (6902, 12003);
+INSERT INTO customer_balance (CID, bal) VALUES (6902, 1200);
 
 SET SERVEROUTPUT ON;
 
 DECLARE
-    balance Number(10);
-
+   -- balance Number(10);
+    category VARCHAR(10);
     -- Procedure to categorize customer and print result instead of updating the table
-    PROCEDURE categorize_customer (CID IN NUMBER, bal IN NUMBER) IS
-        category VARCHAR2(10);
-    BEGIN
-        IF bal <= 10000 THEN
+    PROCEDURE categorize_customer(CID IN NUMBER, bal IN NUMBER) IS
+        
+     BEGIN
+        IF bal<= 10000 
+        THEN
             category := 'Silver';
         ELSIF bal <= 50000 THEN
             category := 'Gold';
@@ -29,12 +30,13 @@ DECLARE
 
         -- Print the category instead of updating the table
         DBMS_OUTPUT.PUT_LINE('CID: ' || CID || ', bal: ' || bal || ', Category: ' || category);
-    END;
+     END;
     
 BEGIN
     -- Loop through all customers and categorize them
-    FOR customer_rec IN (SELECT CID, bal FROM customer_balance) LOOP
-        categorize_customer(customer_rec.CID, customer_rec.bal);
+    FOR i IN (SELECT CID, bal FROM customer_balance) 
+    LOOP
+        categorize_customer(i.CID, i.bal);
     END LOOP;
 
 END;
