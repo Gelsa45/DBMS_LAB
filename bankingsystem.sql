@@ -7,7 +7,7 @@ INSERT INTO accounts values(1245,10000);
 INSERT INTO accounts values(6980,50000);
 INSERT INTO accounts values(7245,2000);
 
-SET SERVEROUTPUT ON
+SET SERVEROUTPUT ON;
 
 ACCEPT acc NUMBER PROMPT 'Enter Account Number : ';
 ACCEPT operation CHAR PROMPT 'Enter operation (debit/credit) : ';
