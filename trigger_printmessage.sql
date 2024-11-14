@@ -6,6 +6,7 @@ INSERT INTO Student1 values(103,'Alice Johnson',2,6);
 INSERT INTO Student1 values(104,'Bob Smith',7,8);
 INSERT INTO Student1 values(105,'Emma Watson',8,6);
 
+set SERVEROUTPUT ON;
 CREATE OR REPLACE TRIGGER StudentTrigger
 AFTER INSERT OR DELETE OR UPDATE ON Student1
 FOR EACH ROW
@@ -24,12 +25,14 @@ BEGIN
         END IF;
     END IF;
 
-    DBMS_OUTPUT.PUT_LINE('Operation: ' || CASE
-        WHEN INSERTING THEN 'Insert'
-        WHEN DELETING THEN 'Delete'
-        WHEN UPDATING THEN 'Update'
-    END || '; Action/Message: ' || v_action_msg);
+   IF INSERTING THEN 
+    DBMS_OUTPUT.PUT_LINE(v_action_msg);
+   elsif updating then
+    dbms_output.PUT_LINE(v_action_msg);
+   else
+    dbms_output.PUT_LINE(v_action_msg);
+   END IF;
 END;
-/
 
+/
 
