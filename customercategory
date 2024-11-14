@@ -5,7 +5,7 @@ CREATE TABLE customer_balance (
 
 INSERT INTO customer_balance(CID, bal) VALUES (6901, 10340);
 INSERT INTO customer_balance(CID, bal) VALUES (6950, 7830);
-INSERT INTO customer_balance (CID, bal) VALUES(7001, 45000);
+INSERT INTO customer_balance (CID, bal) VALUES (7001, 45000);
 INSERT INTO customer_balance (CID, bal) VALUES (8756, 6900);
 INSERT INTO customer_balance (CID, bal) VALUES (4200, 500);
 INSERT INTO customer_balance (CID, bal) VALUES (6902, 1200);
@@ -13,14 +13,15 @@ INSERT INTO customer_balance (CID, bal) VALUES (6902, 1200);
 SET SERVEROUTPUT ON;
 
 DECLARE
-   -- balance Number(10);
-    category VARCHAR(10);
-    -- Procedure to categorize customer and print result instead of updating the table
-    PROCEDURE categorize_customer(CID IN NUMBER, bal IN NUMBER) IS
-        
-     BEGIN
-        IF bal<= 10000 
-        THEN
+    input_cid NUMBER := &input_cid;  -- Take CID as input from the user
+    balance NUMBER;
+    category VARCHAR2(10);
+
+    -- Function to categorize customer based on balance
+    FUNCTION categorize_customer(bal IN NUMBER) RETURN VARCHAR2 IS
+        category VARCHAR2(10);
+    BEGIN
+        IF bal <= 10000 THEN
             category := 'Silver';
         ELSIF bal <= 50000 THEN
             category := 'Gold';
@@ -28,16 +29,21 @@ DECLARE
             category := 'Platinum';
         END IF;
 
-        -- Print the category instead of updating the table
-        DBMS_OUTPUT.PUT_LINE('CID: ' || CID || ', bal: ' || bal || ', Category: ' || category);
-     END;
-    
-BEGIN
-    -- Loop through all customers and categorize them
-    FOR i IN (SELECT CID, bal FROM customer_balance) 
-    LOOP
-        categorize_customer(i.CID, i.bal);
-    END LOOP;
+        RETURN category;
+    END;
 
+BEGIN
+    -- Retrieve balance for the given CID
+    SELECT bal INTO balance
+    FROM customer_balance
+    WHERE CID = input_cid;
+
+    -- Display the category for the given CID
+    category := categorize_customer(balance);
+    DBMS_OUTPUT.PUT_LINE('CID: ' || input_cid || ', Balance: ' || balance || ', Category: ' || category);
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No customer found with CID: ' || input_cid);
 END;
 /
