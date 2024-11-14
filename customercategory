@@ -5,7 +5,7 @@ CREATE TABLE customer_balance (
 
 INSERT INTO customer_balance(CID, bal) VALUES (6901, 10340);
 INSERT INTO customer_balance(CID, bal) VALUES (6950, 7830);
-INSERT INTO customer_balance (CID, bal) VALUES(7001, 45000);
+INSERT INTO customer_balance (CID, bal) VALUES (7001, 45000);
 INSERT INTO customer_balance (CID, bal) VALUES (8756, 6900);
 INSERT INTO customer_balance (CID, bal) VALUES (4200, 500);
 INSERT INTO customer_balance (CID, bal) VALUES (6902, 1200);
@@ -13,14 +13,11 @@ INSERT INTO customer_balance (CID, bal) VALUES (6902, 1200);
 SET SERVEROUTPUT ON;
 
 DECLARE
-   -- balance Number(10);
-    category VARCHAR(10);
-    -- Procedure to categorize customer and print result instead of updating the table
-    PROCEDURE categorize_customer(CID IN NUMBER, bal IN NUMBER) IS
-        
-     BEGIN
-        IF bal<= 10000 
-        THEN
+    -- Function to categorize customer based on balance and return the category
+    FUNCTION categorize_customer(CID IN NUMBER, bal IN NUMBER) RETURN VARCHAR2 IS
+        category VARCHAR2(10);
+    BEGIN
+        IF bal <= 10000 THEN
             category := 'Silver';
         ELSIF bal <= 50000 THEN
             category := 'Gold';
@@ -28,15 +25,14 @@ DECLARE
             category := 'Platinum';
         END IF;
 
-        -- Print the category instead of updating the table
-        DBMS_OUTPUT.PUT_LINE('CID: ' || CID || ', bal: ' || bal || ', Category: ' || category);
-     END;
-    
+        RETURN category;
+    END;
+
 BEGIN
-    -- Loop through all customers and categorize them
+    -- Loop through all customers and display their category
     FOR i IN (SELECT CID, bal FROM customer_balance) 
     LOOP
-        categorize_customer(i.CID, i.bal);
+        DBMS_OUTPUT.PUT_LINE('CID: ' || i.CID || ', bal: ' || i.bal || ', Category: ' || categorize_customer(i.CID, i.bal));
     END LOOP;
 
 END;
